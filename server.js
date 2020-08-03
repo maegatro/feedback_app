@@ -7,7 +7,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 //Admin view
-
 //View all employees
 app.get("/", (req, res) => {
   res.send("Hello");
@@ -36,13 +35,13 @@ app.put("/employee/:id", (req, res) => {});
 app.get("/employee/:id", (req, res) => {});
 
 //add performance review
-
+app.patch("/employee/:id", (req, res) => {});
 //update performance review
-
+app.put("/employee/:id", (req, res) => {});
 //assign employees to participate in another employee's performance review
+app.patch("/employee/:id", (req, res) => {});
 
 //Employee view
-
 //view list of performance reviews requiring feedback
 
 //submit feedback
