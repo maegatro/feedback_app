@@ -6,22 +6,46 @@ const knex = require("knex");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+//Admin view
+
+//View all employees
 app.get("/", (req, res) => {
   res.send("Hello");
 });
 
+//Add employee
 app.post("/employee", (req, res) => {
-  const { name, review } = req.body;
+  const { name } = req.body;
   db("employees")
     .returning("*")
     .insert({
       name: name,
-      review: review,
     })
     .then((response) => {
       res.json(response);
     });
 });
+
+//remove employee
+app.delete("/employee/:id", (req, res) => {});
+
+//update employee
+app.put("/employee/:id", (req, res) => {});
+
+//view performance review
+app.get("/employee/:id", (req, res) => {});
+
+//add performance review
+
+//update performance review
+
+//assign employees to participate in another employee's performance review
+
+//Employee view
+
+//view list of performance reviews requiring feedback
+
+//submit feedback
 
 app.listen(port, () => {
   console.log(`The app listening at http://localhost:${port}`);
