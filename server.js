@@ -2,14 +2,20 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const knex = require("knex");
+const cors = require("cors");
+const { json } = require("express");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cors());
 
 //Admin view
 //View all employees
 app.get("/", (req, res) => {
-  res.send("Hello");
+  db("employees")
+    .select("*")
+    .then((response) => res.json(response))
+    .catch((err) => res.status(400).json("unable to read the list"));
 });
 
 //Add employee
@@ -22,24 +28,47 @@ app.post("/employee", (req, res) => {
     })
     .then((response) => {
       res.json(response);
-    });
+    })
+    .catch((err) => res.status(400).json("unable to add"));
 });
 
 //remove employee
-app.delete("/employee/:id", (req, res) => {});
+app.delete("/employee/:id", (req, res) => {
+  const id = req.params.id;
+  db("employees")
+    .del()
+    .where("id", id)
+    .then((response) => res.json(response))
+    .catch((err) => res.status(400).json("can't delete"));
+});
 
 //update employee
-app.put("/employee/:id", (req, res) => {});
+app.put("/employee/:id", (req, res) => {
+  const id = req.params.id;
+  const { name } = req.body;
+  db("employees")
+    .where("id", id)
+    .update("name", name)
+    .then((response) => res.json(response))
+    .catch((err) => res.status(400).json("can't update"));
+});
 
 //view performance review
-app.get("/employee/:id", (req, res) => {});
+app.get("/employee/:id", (req, res) => {
+  const id = req.params.id;
+  db("employees")
+    .select("*")
+    .where("id", id)
+    .then((response) => res.json(response))
+    .catch((err) => res.status(400).json("can't get review"));
+});
 
 //add performance review
-app.patch("/employee/:id", (req, res) => {});
+app.put("/employee/:id", (req, res) => {});
 //update performance review
 app.put("/employee/:id", (req, res) => {});
 //assign employees to participate in another employee's performance review
-app.patch("/employee/:id", (req, res) => {});
+app.put("/employee/:id", (req, res) => {});
 
 //Employee view
 //view list of performance reviews requiring feedback
