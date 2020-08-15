@@ -20,11 +20,12 @@ app.get("/", (req, res) => {
 
 //Add employee
 app.post("/employee", (req, res) => {
-  const { name } = req.body;
+  const { name, review } = req.body;
   db("employees")
     .returning("*")
     .insert({
       name: name,
+      review: review,
     })
     .then((response) => {
       res.json(response);

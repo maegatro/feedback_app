@@ -8,6 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { Button } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 
 const useStyles = makeStyles({
   table: {
@@ -19,26 +20,6 @@ function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
 }
 
-const rows = [
-  createData(
-    "Frozen yoghurt",
-    "kjasdfjlkdsajfkadslfkjlkjflkdls;kfjadddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddsd",
-    6.0,
-    24,
-    4.0
-  ),
-  createData(
-    "Ice cream sandwich",
-    "kjasdfjlkdsajfkadslfkjlkjflkdls;kfjadddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddsd",
-    9.0,
-    37,
-    4.3
-  ),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
 export default function EmployeesList() {
   const classes = useStyles();
   const [employees, setEmployees] = useState([]);
@@ -49,7 +30,17 @@ export default function EmployeesList() {
     setEmployees(jsonData);
   }, []);
 
-  console.log(employees);
+  //delete employee from the list
+  const deleteEmployee = async (id) => {
+    try {
+      const deleted = await fetch(`http://localhost:5000/employee/${id}`, {
+        method: "DELETE",
+      });
+      setEmployees(employees.filter((e) => e.id !== id));
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -59,8 +50,6 @@ export default function EmployeesList() {
             <TableCell>Name</TableCell>
             <TableCell>Performance Review</TableCell>
             <TableCell align="right"></TableCell>
-            <TableCell align="right"></TableCell>
-            <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -69,25 +58,36 @@ export default function EmployeesList() {
               <TableCell component="th" scope="employees">
                 {employees.name}
               </TableCell>
-              <TableCell>{employees.review}</TableCell>
-              <TableCell align="right">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{ background: "green" }}
-                >
-                  Edit
-                </Button>
+              <TableCell style={{ maxWidth: 800, overflow: "scroll" }}>
+                {employees.review}
               </TableCell>
               <TableCell align="right">
-                <Button variant="contained" color="secondary">
-                  Remove
-                </Button>
-              </TableCell>
-              <TableCell align="right">
-                <Button variant="contained" color="primary">
-                  Assign
-                </Button>
+                <Box display="flex" justifyContent="flex-end">
+                  <Box m={1}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      style={{ background: "green" }}
+                    >
+                      Edit
+                    </Button>
+                  </Box>
+                  <Box m={1}>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={(e) => deleteEmployee(employees.id)}
+                      m={2}
+                    >
+                      Delete
+                    </Button>
+                  </Box>
+                  <Box m={1}>
+                    <Button variant="contained" color="primary" m={2}>
+                      Assign
+                    </Button>
+                  </Box>
+                </Box>
               </TableCell>
             </TableRow>
           ))}
